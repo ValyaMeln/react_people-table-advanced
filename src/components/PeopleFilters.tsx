@@ -1,4 +1,12 @@
+import { useSearchParams } from 'react-router-dom';
+import { SearchLink } from './SearchLink';
+
 export const PeopleFilters = () => {
+  const [searchParams] = useSearchParams();
+
+  const selected = searchParams.getAll('centuries');
+  const centuries = ['16', '17', '18', '19', '20'];
+
   return (
     <nav className="panel">
       <p className="panel-heading">Filters</p>
@@ -33,45 +41,24 @@ export const PeopleFilters = () => {
       <div className="panel-block">
         <div className="level is-flex-grow-1 is-mobile" data-cy="CenturyFilter">
           <div className="level-left">
-            <a
-              data-cy="century"
-              className="button mr-1"
-              href="#/people?centuries=16"
-            >
-              16
-            </a>
+            {centuries.map(c => {
+              const isActive = selected.includes(c);
 
-            <a
-              data-cy="century"
-              className="button mr-1 is-info"
-              href="#/people?centuries=17"
-            >
-              17
-            </a>
+              const updated = isActive
+                ? selected.filter(x => x !== c)
+                : [...selected, c];
 
-            <a
-              data-cy="century"
-              className="button mr-1 is-info"
-              href="#/people?centuries=18"
-            >
-              18
-            </a>
-
-            <a
-              data-cy="century"
-              className="button mr-1 is-info"
-              href="#/people?centuries=19"
-            >
-              19
-            </a>
-
-            <a
-              data-cy="century"
-              className="button mr-1"
-              href="#/people?centuries=20"
-            >
-              20
-            </a>
+              return (
+                <SearchLink
+                  key={c}
+                  params={{ centuries: updated }}
+                  className={`button mr-1 ${isActive ? 'is-info' : ''}`}
+                  data-cy="century"
+                >
+                  {c}
+                </SearchLink>
+              );
+            })}
           </div>
 
           <div className="level-right ml-4">
