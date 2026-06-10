@@ -78,9 +78,9 @@ export const PeoplePage = () => {
         return order === 'desc' ? -res : res;
       });
 
-      if (order === 'desc') {
-        result.reverse();
-      }
+      // if (order === 'desc') {
+      //   result.reverse();
+      // }
     }
 
     return result;

@@ -2,25 +2,34 @@ import { useSearchParams } from 'react-router-dom';
 import { SearchLink } from './SearchLink';
 
 export const PeopleFilters = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const query = searchParams.get('query') || '';
 
   const selected = searchParams.getAll('centuries');
   const centuries = ['16', '17', '18', '19', '20'];
+  const sex = searchParams.get('sex');
 
   return (
     <nav className="panel">
       <p className="panel-heading">Filters</p>
 
       <p className="panel-tabs" data-cy="SexFilter">
-        <a className="is-active" href="#/people">
+        <SearchLink params={{ sex: null }} className={!sex ? 'is-active' : ''}>
           All
-        </a>
-        <a className="" href="#/people?sex=m">
+        </SearchLink>
+        <SearchLink
+          params={{ sex: 'm' }}
+          className={sex === 'm' ? 'is-active' : ''}
+        >
           Male
-        </a>
-        <a className="" href="#/people?sex=f">
+        </SearchLink>
+        <SearchLink
+          params={{ sex: 'f' }}
+          className={sex === 'f' ? 'is-active' : ''}
+        >
           Female
-        </a>
+        </SearchLink>
       </p>
 
       <div className="panel-block">
@@ -30,6 +39,18 @@ export const PeopleFilters = () => {
             type="search"
             className="input"
             placeholder="Search"
+            value={query}
+            onChange={e => {
+              const newParams = new URLSearchParams(searchParams);
+
+              if (e.target.value) {
+                newParams.set('query', e.target.value);
+              } else {
+                newParams.delete('query');
+              }
+
+              setSearchParams(newParams);
+            }}
           />
 
           <span className="icon is-left">
@@ -62,21 +83,26 @@ export const PeopleFilters = () => {
           </div>
 
           <div className="level-right ml-4">
-            <a
-              data-cy="centuryALL"
+            <SearchLink
+              params={{ centuries: null }}
               className="button is-success is-outlined"
-              href="#/people"
             >
               All
-            </a>
+            </SearchLink>
           </div>
         </div>
       </div>
 
       <div className="panel-block">
-        <a className="button is-link is-outlined is-fullwidth" href="#/people">
+        {/* <a className="button is-link is-outlined is-fullwidth" href="#/people">
           Reset all filters
-        </a>
+        </a> */}
+        <SearchLink
+          params={{ query: null, sex: null, centuries: null }}
+          className="button is-link is-outlined is-fullwidth"
+        >
+          Reset all filters
+        </SearchLink>
       </div>
     </nav>
   );
